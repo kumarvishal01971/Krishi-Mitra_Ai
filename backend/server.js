@@ -1,11 +1,18 @@
 // server.js
-
+import dotenv from 'dotenv';
+dotenv.config();
 import express from 'express';
 import cors from 'cors';
 import fetch from 'node-fetch';
+import connectDB from './config/db.js';
+import usersRouter from './routes/users.js';
+import detectionsRouter from './routes/detections.js';
 
 const app = express();
 const PORT = process.env.PORT || 4000;
+
+// ── Connect to MongoDB ────────────────────────────
+connectDB();
 
 // ── Config ────────────────────────────────────────
 const AUTH0_DOMAIN    = process.env.AUTH0_DOMAIN    || "dev-zl6sofbd5sbrdbde.us.auth0.com";
@@ -15,7 +22,7 @@ const GROQ_API_KEY    = process.env.GROQ_API_KEY;
 const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 
 // ── Middleware ────────────────────────────────────
-app.use(express.json());
+app.use(express.json({ limit: '10mb' })); // limit raised for base64 imageUrl if needed
 app.use(cors({
   origin: true,
   credentials: true,
@@ -23,6 +30,10 @@ app.use(cors({
 
 // ── Health check ──────────────────────────────────
 app.get('/health', (_req, res) => res.json({ ok: true }));
+
+// ── API Routes ────────────────────────────────────
+app.use('/api/users', usersRouter);
+app.use('/api/detections', detectionsRouter);
 
 // ── SEND OTP ──────────────────────────────────────
 app.post('/auth/send-otp', async (req, res) => {
@@ -117,9 +128,9 @@ app.post('/auth/verify-otp', async (req, res) => {
     return res.json({
       ok: true,
       user: {
-        name: profile.name || profile.email,
+        name:  profile.name || profile.email,
         email: profile.email,
-        sub: profile.sub,
+        sub:   profile.sub,
       }
     });
 
