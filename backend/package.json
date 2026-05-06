@@ -11,9 +11,15 @@
   "dependencies": {
     "cors": "^2.8.6",
     "express": "^5.2.1",
+    "mongodb": "^7.2.0",
+    "mongoose": "^9.6.1",
     "node-fetch": "^3.3.2"
   },
-  "keywords": ["agriculture", "ai", "backend"],
+  "keywords": [
+    "agriculture",
+    "ai",
+    "backend"
+  ],
   "author": "",
   "license": "ISC"
 }

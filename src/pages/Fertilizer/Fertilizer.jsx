@@ -1,5 +1,5 @@
 // src/pages/Fertilizer/Fertilizer.jsx
-import React, { useState, useEffect, useCallback, useMemo } from 'react';
+import React, { useState, useEffect, useCallback, useMemo, useRef } from 'react';
 import Card from '../../components/common/Card';
 import Btn from '../../components/common/Button';
 import Badge from '../../components/common/Badge';
@@ -21,24 +21,34 @@ const Fertilizer = () => {
     disease: false
   });
 
+  // Refs to hold latest values — avoids stale closures in getRecommendation
+  // without needing ph/crop/disease in its dependency array (which caused the loop)
+  const phRef = useRef(ph);
+  const cropRef = useRef(crop);
+  const diseaseRef = useRef(disease);
+
+  useEffect(() => { phRef.current = ph; }, [ph]);
+  useEffect(() => { cropRef.current = crop; }, [crop]);
+  useEffect(() => { diseaseRef.current = disease; }, [disease]);
+
   // Constants
   const crops = ["Rice", "Wheat", "Tomato", "Cotton", "Maize", "Sugarcane", "Potato"];
-  
+
   const cropNPK = useMemo(() => ({
-    Rice: { N: 120, P: 60, K: 60, unit: "kg/ha" },
-    Wheat: { N: 150, P: 60, K: 40, unit: "kg/ha" },
-    Tomato: { N: 180, P: 60, K: 120, unit: "kg/ha" },
-    Cotton: { N: 120, P: 60, K: 60, unit: "kg/ha" },
-    Maize: { N: 180, P: 80, K: 60, unit: "kg/ha" },
-    Sugarcane: { N: 250, P: 80, K: 120, unit: "kg/ha" },
-    Potato: { N: 200, P: 100, K: 200, unit: "kg/ha" }
+    Rice:      { N: 120, P: 60,  K: 60,  unit: "kg/ha" },
+    Wheat:     { N: 150, P: 60,  K: 40,  unit: "kg/ha" },
+    Tomato:    { N: 180, P: 60,  K: 120, unit: "kg/ha" },
+    Cotton:    { N: 120, P: 60,  K: 60,  unit: "kg/ha" },
+    Maize:     { N: 180, P: 80,  K: 60,  unit: "kg/ha" },
+    Sugarcane: { N: 250, P: 80,  K: 120, unit: "kg/ha" },
+    Potato:    { N: 200, P: 100, K: 200, unit: "kg/ha" }
   }), []);
 
   // Helper functions
   const getSoilType = useCallback((pH) => {
-    if (pH < 5.5) return { type: "Acidic Soil", status: "acidic", color: theme.alert };
-    if (pH > 7.5) return { type: "Alkaline Soil", status: "alkaline", color: theme.wheat };
-    return { type: "Neutral/Ideal Soil", status: "neutral", color: theme.sprout };
+    if (pH < 5.5) return { type: "Acidic Soil",        status: "acidic",   color: theme.alert  };
+    if (pH > 7.5) return { type: "Alkaline Soil",      status: "alkaline", color: theme.wheat  };
+    return             { type: "Neutral/Ideal Soil",   status: "neutral",  color: theme.sprout };
   }, []);
 
   const getFertilizerRecommendation = useCallback((pH) => {
@@ -72,69 +82,84 @@ const Fertilizer = () => {
 
   const getDiseaseRecommendation = useCallback((diseaseName, pH, cropType) => {
     if (!diseaseName) return null;
-    
     const soilStatus = getSoilType(pH).status;
-    const npk = cropNPK[cropType];
-    
     return {
       adjustment: `Increase Potassium (K) application by 20-30% to boost immunity`,
       foliar: "Potassium silicate foliar spray (2-3 ml/L water) every 10-14 days",
       organic: "Neem cake application (200-300 kg/ha) for disease suppression",
       notes: `${diseaseName} thrives in ${soilStatus} soil conditions. Maintain proper spacing for air circulation.`
     };
-  }, [cropNPK, getSoilType]);
+  }, [getSoilType]);
 
   const getSeverityLevel = useCallback((pH) => {
-    if (pH < 4.5 || pH > 9) return 'critical';
+    if (pH < 4.5 || pH > 9)   return 'critical';
     if (pH < 5.0 || pH > 8.5) return 'high';
     if (pH < 5.5 || pH > 7.5) return 'moderate';
     return 'optimal';
   }, []);
 
+  // ─── FIX: reads values from refs, not from closed-over state ───────────────
+  // This means ph/crop/disease are NOT needed in the dependency array,
+  // so getRecommendation is stable and won't retrigger the useEffect below.
   const getRecommendation = useCallback(() => {
+    const currentPh      = phRef.current;
+    const currentCrop    = cropRef.current;
+    const currentDisease = diseaseRef.current;
+
     setLoading(true);
     setError(null);
-    
-    try {
-      // Simulate async operation (replace with actual API call if needed)
-      setTimeout(() => {
-        const soilInfo = getSoilType(ph);
-        const fertilizerInfo = getFertilizerRecommendation(ph);
-        const npkInfo = cropNPK[crop];
-        const diseaseInfo = getDiseaseRecommendation(disease, ph, crop);
-        const severity = getSeverityLevel(ph);
-        
+
+    setTimeout(() => {
+      try {
+        const soilInfo      = getSoilType(currentPh);
+        const fertilizerInfo = getFertilizerRecommendation(currentPh);
+        const npkInfo       = cropNPK[currentCrop];
+        const diseaseInfo   = getDiseaseRecommendation(currentDisease, currentPh, currentCrop);
+        const severity      = getSeverityLevel(currentPh);
+
         setRecommendation({
-          soilType: soilInfo.type,
+          soilType:  soilInfo.type,
           soilStatus: soilInfo.status,
           soilColor: soilInfo.color,
           ...fertilizerInfo,
-          npk: formatNPK(npkInfo),
+          npk:       formatNPK(npkInfo),
           npkValues: npkInfo,
-          disease: diseaseInfo,
+          disease:   diseaseInfo,
           severity,
-          ph: ph.toFixed(1),
-          crop
+          ph:        currentPh.toFixed(1),
+          crop:      currentCrop
         });
-        
+      } catch (err) {
+        setError("Failed to generate recommendation. Please try again.");
+      } finally {
         setLoading(false);
-      }, 800); // Simulate loading delay
-    } catch (err) {
-      setError("Failed to generate recommendation. Please try again.");
-      setLoading(false);
-    }
-  }, [ph, crop, disease, getSoilType, getFertilizerRecommendation, cropNPK, formatNPK, getDiseaseRecommendation, getSeverityLevel]);
+      }
+    }, 800);
+  }, [
+    getSoilType,
+    getFertilizerRecommendation,
+    cropNPK,
+    formatNPK,
+    getDiseaseRecommendation,
+    getSeverityLevel
+    // ↑ No ph / crop / disease here — we read them from refs above
+  ]);
 
-  // Auto-recommend when pH changes after user interaction
+  // ─── FIX: removed `loading` and `getRecommendation` from deps ─────────────
+  // Previously, `loading` in deps caused:
+  //   slider moves → effect fires → loading=true → effect fires again →
+  //   loading=false → effect fires again → infinite loop
+  // Now the effect only reruns when `ph` or `touched.ph` genuinely changes.
   useEffect(() => {
-    if (touched.ph && !loading) {
-      const debounceTimer = setTimeout(() => {
-        getRecommendation();
-      }, 500);
-      
-      return () => clearTimeout(debounceTimer);
-    }
-  }, [ph, touched.ph, getRecommendation, loading]);
+    if (!touched.ph) return;
+
+    const debounceTimer = setTimeout(() => {
+      getRecommendation();
+    }, 500);
+
+    return () => clearTimeout(debounceTimer);
+  }, [ph, touched.ph]); // eslint-disable-line react-hooks/exhaustive-deps
+  // ^ getRecommendation is intentionally omitted — it's stable via refs
 
   const handlePhChange = (value) => {
     setPh(value);
@@ -143,8 +168,8 @@ const Fertilizer = () => {
 
   const handleCropChange = (selectedCrop) => {
     setCrop(selectedCrop);
+    cropRef.current = selectedCrop; // sync ref immediately so getRecommendation reads new value
     setTouched(prev => ({ ...prev, crop: true }));
-    // Optionally refresh recommendation
     if (recommendation) getRecommendation();
   };
 
@@ -162,19 +187,17 @@ const Fertilizer = () => {
 
   const getPhStatusIcon = useCallback(() => {
     const status = getSoilType(ph).status;
-    switch(status) {
-      case 'acidic': return '⚠️';
+    switch (status) {
+      case 'acidic':   return '⚠️';
       case 'alkaline': return '⚡';
-      default: return '✅';
+      default:         return '✅';
     }
   }, [ph, getSoilType]);
 
   return (
     <div className="fertilizer-container">
       <div className="fertilizer-header">
-        <h2 className="fertilizer-title">
-          Fertilizer Recommendation
-        </h2>
+        <h2 className="fertilizer-title">Fertilizer Recommendation</h2>
         <p className="fertilizer-subtitle">
           pH-based soil analysis with crop-specific fertilizer guidance
         </p>
@@ -265,18 +288,18 @@ const Fertilizer = () => {
 
           {/* Action Buttons */}
           <div className="action-buttons">
-            <Btn 
-              icon="flask" 
-              onClick={getRecommendation} 
+            <Btn
+              icon="flask"
+              onClick={getRecommendation}
               disabled={loading}
               className="recommend-btn"
               loading={loading}
             >
               {loading ? 'Analyzing...' : 'Get Recommendation'}
             </Btn>
-            
+
             {recommendation && (
-              <button 
+              <button
                 onClick={clearRecommendation}
                 className="clear-btn"
                 aria-label="Clear recommendation"
@@ -473,13 +496,13 @@ const Fertilizer = () => {
 // Helper function to get crop icon
 const getCropIcon = (crop) => {
   const icons = {
-    Rice: "🌾",
-    Wheat: "🌾",
-    Tomato: "🍅",
-    Cotton: "🌿",
-    Maize: "🌽",
+    Rice:      "🌾",
+    Wheat:     "🌾",
+    Tomato:    "🍅",
+    Cotton:    "🌿",
+    Maize:     "🌽",
     Sugarcane: "🎋",
-    Potato: "🥔"
+    Potato:    "🥔"
   };
   return icons[crop] || "🌱";
 };

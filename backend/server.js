@@ -10,6 +10,7 @@ import detectionsRouter from './routes/detections.js';
 
 const app = express();
 const PORT = process.env.PORT || 4000;
+const MONGODB_URI = process.env.MONGODB_URI;
 
 // ── Connect to MongoDB ────────────────────────────
 connectDB();
@@ -29,7 +30,14 @@ app.use(cors({
 }));
 
 // ── Health check ──────────────────────────────────
-app.get('/health', (_req, res) => res.json({ ok: true }));
+app.get('/health', (_req, res) => {
+  const dbState = mongoose.connection.readyState;
+  return res.json({
+    ok: true,
+    dbConnected: dbState === 1,
+    dbState,
+  });
+});
 
 // ── API Routes ────────────────────────────────────
 app.use('/api/users', usersRouter);
@@ -257,7 +265,35 @@ STRICT RULES:
   }
 });
 
+// ── MongoDB Connection ───────────────────────────
+const connectDatabase = async () => {
+  if (!MONGODB_URI) {
+    console.warn('⚠️ MONGODB_URI is not set. MongoDB features will be unavailable.');
+    return false;
+  }
+
+  try {
+    await mongoose.connect(MONGODB_URI);
+    console.log('✅ Connected to MongoDB');
+    return true;
+  } catch (err) {
+    console.error('⚠️ MongoDB connection failed:', err);
+    return false;
+  }
+};
+
 // ── START SERVER ──────────────────────────────────
+<<<<<<< HEAD
 app.listen(PORT, () => {
   console.log(`✅ Server running at http://localhost:${PORT}`);
 });
+=======
+const startServer = async () => {
+  await connectDatabase();
+  app.listen(PORT, () => {
+    console.log(`✅ Server running at http://localhost:${PORT}`);
+  });
+};
+
+startServer();
+>>>>>>> 424d63d (NEW COMMIT)
