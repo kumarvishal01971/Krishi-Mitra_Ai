@@ -6,6 +6,7 @@ const api = axios.create({
   headers: {
     'Content-Type': 'application/json',
   },
+  timeout: 30000, // 30s — accounts for Render free tier cold starts
 });
 
 export default api;

@@ -16,6 +16,7 @@ import Header            from './components/layout/Header';
 import Footer            from './components/layout/Footer';
 import AuthPage          from './pages/Auth/Authpage';
 import LandingPage       from './pages/landing/landing.jsx';
+import { pingBackend }   from './services/userService';   // ← added
 
 // ── Full-screen spinner shown while Auth0 checks session ──────
 const LoadingScreen = () => (
@@ -58,6 +59,11 @@ const App = () => {
   // Google login  → user (from Auth0 SDK)
   // Email OTP     → otpUser (from our backend verify response)
   const activeUser = isAuthenticated ? user : otpUser;
+
+  // ── Wake up Render backend the moment the app loads ──────────
+  useEffect(() => {
+    pingBackend();   // ← added — fires once on mount, warms up Render
+  }, []);
 
   // ── Sync Auth0 Google session → view ─────────────────────────
   // When Auth0 finishes loading and finds an existing Google session,

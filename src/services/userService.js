@@ -1,41 +1,52 @@
 // src/services/userService.js
 import api from './api.js';
 
-// ── syncUser ──────────────────────────────────────
-// Call this immediately after OTP verify succeeds.
-// In AuthPage.jsx → handleOtpVerified() → add syncUser(user) call.
-//
-// Usage:
-//   const mongoUser = await syncUser({ auth0Id: user.sub, email: user.email, name: user.name });
-//   localStorage.setItem('mongoUserId', mongoUser._id);
-//
-export const syncUser = async ({ auth0Id, email, name }) => {
+// ── Wake up Render backend (free tier spins down) ─
+export const pingBackend = async () => {
   try {
-    const res = await api.post('/api/users/sync', { auth0Id, email, name });
-    const mongoUser = res.data.user;
-
-    // Store MongoDB _id in localStorage — needed for saving detections
-    localStorage.setItem('mongoUserId', mongoUser._id);
-    localStorage.setItem('mongoUser', JSON.stringify(mongoUser));
-
-    console.log('✅ User synced to MongoDB:', mongoUser._id);
-    return mongoUser;
-  } catch (err) {
-    // Non-blocking — auth still works even if sync fails
-    console.error('❌ Failed to sync user to MongoDB:', err.message);
-    return null;
+    await api.get('/health', { timeout: 60000 });
+    console.log('✅ Backend is awake');
+  } catch {
+    console.warn('⚠️ Backend ping failed — may still be waking up');
   }
 };
 
+// ── syncUser ──────────────────────────────────────
+export const syncUser = async ({ auth0Id, email, name }, retries = 3) => {
+  for (let attempt = 1; attempt <= retries; attempt++) {
+    try {
+      console.log(`🔄 Syncing user to MongoDB (attempt ${attempt})...`);
+
+      const res = await api.post(
+        '/api/users/sync',
+        { auth0Id, email, name },
+        { timeout: 30000 }   // 30s timeout per attempt
+      );
+
+      const mongoUser = res.data.user;
+
+      localStorage.setItem('mongoUserId', mongoUser._id);
+      localStorage.setItem('mongoUser', JSON.stringify(mongoUser));
+
+      console.log('✅ User synced to MongoDB:', mongoUser._id);
+      return mongoUser;
+
+    } catch (err) {
+      const isLast = attempt === retries;
+      console.error(
+        `❌ Sync attempt ${attempt} failed: ${err.message}`,
+        isLast ? '— giving up' : '— retrying in 3s...'
+      );
+      if (!isLast) await new Promise(r => setTimeout(r, 3000));
+    }
+  }
+  return null;
+};
+
 // ── getUserProfile ────────────────────────────────
-// Fetch full user profile from MongoDB by Auth0 sub.
-//
-// Usage:
-//   const profile = await getUserProfile(user.sub);
-//
 export const getUserProfile = async (auth0Id) => {
   try {
-    const res = await api.get(`/api/users/${auth0Id}`);
+    const res = await api.get(`/api/users/${auth0Id}`, { timeout: 15000 });
     return res.data.user;
   } catch (err) {
     console.error('❌ Failed to fetch user profile:', err.message);
@@ -44,7 +55,4 @@ export const getUserProfile = async (auth0Id) => {
 };
 
 // ── getMongoUserId ────────────────────────────────
-// Helper to get stored MongoDB _id from localStorage.
-// Use this wherever you need userId for detection calls.
-//
 export const getMongoUserId = () => localStorage.getItem('mongoUserId');
