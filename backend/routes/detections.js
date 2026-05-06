@@ -21,10 +21,10 @@ router.post('/', async (req, res) => {
     location,
   } = req.body;
 
-  if (!userId || !diseaseLabel || !diseaseName || !cropName || confidence == null || isHealthy == null) {
+  if (!diseaseLabel || !diseaseName || !cropName || confidence == null || isHealthy == null) {
     return res.status(400).json({
       error: 'missing_fields',
-      error_description: 'userId, diseaseLabel, diseaseName, cropName, confidence and isHealthy are required.'
+      error_description: ' diseaseLabel, diseaseName, cropName, confidence and isHealthy are required.'
     });
   }
 

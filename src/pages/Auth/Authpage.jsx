@@ -301,8 +301,21 @@ const AuthPage = ({ onAuthSuccess, onBack }) => {
   useEffect(() => {
     if (isAuthenticated && user) {
       const u = { name: user.name, email: user.email, picture: user.picture };
-      setAuthUser(u); setSuccess(true);
-      setTimeout(() => onAuthSuccess?.(u), 900);
+
+      // Sync Google user to MongoDB too
+      fetch(`${API}/api/users/sync`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ auth0Id: user.sub, email: user.email, name: user.name }),
+      })
+        .then(r => r.json())
+        .then(data => { if (data._id) u.mongoId = data._id; })
+        .catch(err => console.error('Google sync failed:', err))
+        .finally(() => {
+          localStorage.setItem('krishi_user', JSON.stringify(u));  // ← always save
+          setAuthUser(u); setSuccess(true);
+          setTimeout(() => onAuthSuccess?.(u), 900);
+        });
     }
   }, [isAuthenticated, user]);
 
@@ -369,6 +382,7 @@ const AuthPage = ({ onAuthSuccess, onBack }) => {
       });
       const data = await res.json();
       if (data._id) u.mongoId = data._id;  // stash for detection calls later
+      localStorage.setItem('krishi_user', JSON.stringify(u));  // ← add this
     } catch (err) {
       console.error('User sync failed:', err); // non-fatal, auth still succeeds
     }
