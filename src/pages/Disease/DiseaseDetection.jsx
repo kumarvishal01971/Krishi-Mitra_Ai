@@ -8,6 +8,8 @@ import UploadBox from './UploadBox';
 import DiagnosisResult from './DiagnosisResult';
 import { theme } from '../../styles/theme';
 
+const API = import.meta.env.VITE_API_URL || '';
+
 const DiseaseDetection = () => {
   const [file, setFile] = useState(null);
   const [preview, setPreview] = useState(null);
@@ -15,11 +17,12 @@ const DiseaseDetection = () => {
   const [loading, setLoading] = useState(false);
   const [drag, setDrag] = useState(false);
   const [clientReady, setClientReady] = useState(false);
-  const [clientError, setClientError] = useState(false); // ← safe addition from File 2 pattern
+  const [clientError, setClientError] = useState(false);
+  const [syncError, setSyncError] = useState(null); // for non-fatal DB errors
   const fileRef = useRef();
   const clientRef = useRef(null);
 
-  // ── Connect once on mount (File 1 approach — faster, no reconnect per analyze) ──
+  // ── Connect to Gradio model once on mount ──────────────────
   useEffect(() => {
     Client.connect("sanjaychaurasia1/krishimitra-ai", {
       hf_token: import.meta.env.VITE_HF_TOKEN,
@@ -30,11 +33,11 @@ const DiseaseDetection = () => {
       })
       .catch((err) => {
         console.error("Failed to connect to model:", err);
-        setClientError(true); // ← shows error badge instead of infinite "Connecting..."
+        setClientError(true);
       });
   }, []);
 
-  // ── File handler with validation (safe addition from File 2) ──
+  // ── File handler with validation ───────────────────────────
   const handleFile = (f) => {
     if (!f) return;
     if (!f.type.startsWith('image/')) {
@@ -43,6 +46,7 @@ const DiseaseDetection = () => {
     }
     setFile(f);
     setResult(null);
+    setSyncError(null);
     const reader = new FileReader();
     reader.onload = (e) => setPreview(e.target.result);
     reader.readAsDataURL(f);
@@ -85,7 +89,6 @@ const DiseaseDetection = () => {
         .filter(Boolean);
     };
 
-    // ← Safe fallback added: tries get('disease') if heading parse fails
     const diseaseName =
       raw.split('**')[0].replace(/^#+\s*/, '').trim() ||
       get('disease') ||
@@ -102,10 +105,47 @@ const DiseaseDetection = () => {
     };
   };
 
+  // ── Save detection to MongoDB ──────────────────────────────
+  const saveDetectionToDb = async ({ diagnosis, parsed, confidence }) => {
+    try {
+      const storedUser = JSON.parse(localStorage.getItem('krishi_user') || '{}');
+
+      const res = await fetch(`${API}/api/detections`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          userId:       storedUser.mongoId  || null,
+          userEmail:    storedUser.email    || null,
+          diseaseLabel: diagnosis,
+          diseaseName:  parsed.disease,
+          cropName:     parsed.plant,
+          confidence:   confidence,
+          isHealthy:    parsed.disease?.toLowerCase().includes('healthy') || false,
+          detectedAt:   new Date().toISOString(),   // ← timestamp
+        }),
+      });
+
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({}));
+        console.error('Detection save failed (server):', err);
+        setSyncError('Detection saved locally but not synced to server.');
+        return;
+      }
+
+      const saved = await res.json();
+      console.log('Detection saved to MongoDB:', saved._id);
+    } catch (err) {
+      console.error('Detection save failed (network):', err);
+      setSyncError('Could not reach server. Detection not saved.');
+    }
+  };
+
+  // ── Main analysis function ─────────────────────────────────
   const detect = async () => {
     if (!file || !clientRef.current) return;
     setLoading(true);
     setResult(null);
+    setSyncError(null);
 
     try {
       const response = await clientRef.current.predict("/predict", {
@@ -119,7 +159,7 @@ const DiseaseDetection = () => {
       const parsed = parseMarkdownResponse(diagnosis);
       const confidence = extractConfidence(confidenceData);
 
-      setResult({
+      const finalResult = {
         ...parsed,
         confidence,
         severity: parsed.severity
@@ -135,7 +175,12 @@ const DiseaseDetection = () => {
             .sort((a, b) => b.confidence - a.confidence)
             .slice(0, 3);
         })(),
-      });
+      };
+
+      setResult(finalResult);
+
+      // ── Save to MongoDB (non-blocking, non-fatal) ──
+      await saveDetectionToDb({ diagnosis, parsed, confidence });
 
     } catch (err) {
       console.error('Analysis error:', err);
@@ -209,6 +254,19 @@ const DiseaseDetection = () => {
         </div>
       </div>
 
+      {/* ── Non-fatal DB sync warning ── */}
+      {syncError && (
+        <div style={{
+          background: 'rgba(251,191,36,0.08)',
+          border: '1px solid rgba(251,191,36,0.3)',
+          borderRadius: 10, padding: '8px 14px', marginBottom: 16,
+          color: '#fbbf24', fontSize: 12, display: 'flex', alignItems: 'center', gap: 8,
+          fontFamily: "'Poppins', sans-serif",
+        }}>
+          <span>⚠</span> {syncError}
+        </div>
+      )}
+
       {/* ── Main two-column layout ── */}
       <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 24 }}>
         <div>
@@ -227,7 +285,7 @@ const DiseaseDetection = () => {
             fileRef={fileRef}
           />
 
-          {/* ← File size info shown after upload (safe addition from File 2) */}
+          {/* File size info */}
           {file && (
             <p style={{ color: theme.mist, fontSize: 11, opacity: 0.5, marginTop: 6, marginBottom: 0 }}>
               {file.name} · {(file.size / 1024 / 1024).toFixed(2)} MB
@@ -245,7 +303,7 @@ const DiseaseDetection = () => {
               {loading ? "Analyzing..." : "Analyze Plant"}
             </Btn>
             {preview && (
-              <Btn variant="ghost" onClick={() => { setFile(null); setPreview(null); setResult(null); }}>
+              <Btn variant="ghost" onClick={() => { setFile(null); setPreview(null); setResult(null); setSyncError(null); }}>
                 Clear
               </Btn>
             )}

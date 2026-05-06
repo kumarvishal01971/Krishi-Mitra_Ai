@@ -346,12 +346,33 @@ const AuthPage = ({ onAuthSuccess, onBack }) => {
     finally { setLoading(false); }
   };
 
-  const handleOtpVerified = (verifiedUser) => {
+  const handleOtpVerified = async (verifiedUser) => {
     const u = {
-      name:    verifiedUser?.name    || (mode === 'login' ? loginEmail.split('@')[0] : regName),
-      email:   verifiedUser?.email   || (mode === 'login' ? loginEmail : regEmail),
+      name: verifiedUser?.name || (mode === 'login' ? loginEmail.split('@')[0] : regName),
+      email: verifiedUser?.email || (mode === 'login' ? loginEmail : regEmail),
       picture: verifiedUser?.picture || null,
     };
+
+    // Sync user to MongoDB and store their _id
+    try {
+      const res = await fetch(`${API}/api/users/sync`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          email: u.email,
+          name: u.name,
+          // registration extra fields (ignored on login)
+          phone: regPhone || undefined,
+          state: regState || undefined,
+          crop: regCrop || undefined,
+        }),
+      });
+      const data = await res.json();
+      if (data._id) u.mongoId = data._id;  // stash for detection calls later
+    } catch (err) {
+      console.error('User sync failed:', err); // non-fatal, auth still succeeds
+    }
+
     setAuthUser(u); setSuccess(true);
     setTimeout(() => onAuthSuccess?.(u), 900);
   };
