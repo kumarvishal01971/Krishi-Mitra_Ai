@@ -4,16 +4,13 @@ dotenv.config();
 import express from 'express';
 import cors from 'cors';
 import fetch from 'node-fetch';
+import mongoose from 'mongoose';
 import connectDB from './config/db.js';
 import usersRouter from './routes/users.js';
 import detectionsRouter from './routes/detections.js';
 
 const app = express();
 const PORT = process.env.PORT || 4000;
-const MONGODB_URI = process.env.MONGODB_URI;
-
-// ── Connect to MongoDB ────────────────────────────
-connectDB();
 
 // ── Config ────────────────────────────────────────
 const AUTH0_DOMAIN    = process.env.AUTH0_DOMAIN    || "dev-zl6sofbd5sbrdbde.us.auth0.com";
@@ -22,8 +19,11 @@ const GROQ_API_KEY    = process.env.GROQ_API_KEY;
 
 const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 
+// ── Connect to MongoDB ────────────────────────────
+connectDB();
+
 // ── Middleware ────────────────────────────────────
-app.use(express.json({ limit: '10mb' })); // limit raised for base64 imageUrl if needed
+app.use(express.json({ limit: '10mb' }));
 app.use(cors({
   origin: true,
   credentials: true,
@@ -265,35 +265,7 @@ STRICT RULES:
   }
 });
 
-// ── MongoDB Connection ───────────────────────────
-const connectDatabase = async () => {
-  if (!MONGODB_URI) {
-    console.warn('⚠️ MONGODB_URI is not set. MongoDB features will be unavailable.');
-    return false;
-  }
-
-  try {
-    await mongoose.connect(MONGODB_URI);
-    console.log('✅ Connected to MongoDB');
-    return true;
-  } catch (err) {
-    console.error('⚠️ MongoDB connection failed:', err);
-    return false;
-  }
-};
-
 // ── START SERVER ──────────────────────────────────
-<<<<<<< HEAD
 app.listen(PORT, () => {
   console.log(`✅ Server running at http://localhost:${PORT}`);
 });
-=======
-const startServer = async () => {
-  await connectDatabase();
-  app.listen(PORT, () => {
-    console.log(`✅ Server running at http://localhost:${PORT}`);
-  });
-};
-
-startServer();
->>>>>>> 424d63d (NEW COMMIT)
