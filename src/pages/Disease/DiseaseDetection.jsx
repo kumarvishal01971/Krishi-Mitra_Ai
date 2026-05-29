@@ -110,9 +110,10 @@ const DiseaseDetection = () => {
       diseaseLabel: parsed.disease,
       diseaseName:  parsed.disease,
       cropName:     parsed.plant || parsed.disease?.split(" ")[0] || "Unknown",
+      diseaseLabel: parsed.disease || "Unknown",
       confidence:   confidence,
       isHealthy:    parsed.disease?.toLowerCase().includes('healthy') || false,
-      treatmentAdvice: parsed.treatment || '',
+      treatmentAdvice: Array.isArray(parsed.treatment) ? parsed.treatment.join('. ') : (parsed.treatment || ''),
     });
 
     if (!result.success) {
