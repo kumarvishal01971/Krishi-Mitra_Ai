@@ -96,7 +96,7 @@ const App = () => {
 
   const pages = {
     dashboard:       <DiseaseDetection />,
-    'crop-advisory': <CropAdvisory />,
+    'crop-advisory': <CropAdvisory setActive={setActive} />,
     market:          <Market />,
     calendar:        <CropCalendar />,
     schemes:         <Schemes />,
