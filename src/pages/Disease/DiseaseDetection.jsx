@@ -7,8 +7,7 @@ import Icon from '../../components/common/Icon';
 import UploadBox from './UploadBox';
 import DiagnosisResult from './DiagnosisResult';
 import { theme } from '../../styles/theme';
-
-const API = import.meta.env.VITE_API_URL || '';
+import { saveDetection } from '../../services/detectionService';
 
 const DiseaseDetection = () => {
   const [file, setFile] = useState(null);
@@ -106,36 +105,25 @@ const DiseaseDetection = () => {
   };
 
   // ── Save detection to MongoDB ──────────────────────────────
-  const saveDetectionToDb = async ({ diagnosis, parsed, confidence }) => {
+  const saveDetectionToDb = async ({ parsed, confidence }) => {
     try {
-      const storedUser = JSON.parse(localStorage.getItem('krishi_user') || '{}');
-
-      const res = await fetch(`${API}/api/detections`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          userId:       storedUser.mongoId  || null,
-          userEmail:    storedUser.email    || null,
-          diseaseLabel: diagnosis,
-          diseaseName:  parsed.disease,
-          cropName:     parsed.plant,
-          confidence:   confidence,
-          isHealthy:    parsed.disease?.toLowerCase().includes('healthy') || false,
-          detectedAt:   new Date().toISOString(),   // ← timestamp
-        }),
+      const saved = await saveDetection({
+        diseaseLabel: parsed.disease,
+        diseaseName:  parsed.disease,
+        cropName:     parsed.plant,
+        confidence:   confidence,
+        isHealthy:    parsed.disease?.toLowerCase().includes('healthy') || false,
+        treatmentAdvice: parsed.treatment || '',
       });
 
-      if (!res.ok) {
-        const err = await res.json().catch(() => ({}));
-        console.error('Detection save failed (server):', err);
-        setSyncError('Detection saved locally but not synced to server.');
+      if (!saved) {
+        setSyncError('⚠️ Detection saved locally but not synced to server. Please log in.');
         return;
       }
 
-      const saved = await res.json();
-      console.log('Detection saved to MongoDB:', saved._id);
+      console.log('✅ Detection saved to MongoDB:', saved._id);
     } catch (err) {
-      console.error('Detection save failed (network):', err);
+      console.error('❌ Detection save failed:', err);
       setSyncError('Could not reach server. Detection not saved.');
     }
   };
@@ -180,7 +168,7 @@ const DiseaseDetection = () => {
       setResult(finalResult);
 
       // ── Save to MongoDB (non-blocking, non-fatal) ──
-      await saveDetectionToDb({ diagnosis, parsed, confidence });
+      await saveDetectionToDb({ parsed, confidence });
 
     } catch (err) {
       console.error('Analysis error:', err);

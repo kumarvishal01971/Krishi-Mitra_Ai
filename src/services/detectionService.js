@@ -25,9 +25,15 @@ export const saveDetection = async (detectionData) => {
   }
 
   try {
+    // Ensure confidence is in 0-1 range
+    const confidence = typeof detectionData.confidence === 'number'
+      ? detectionData.confidence > 1 ? detectionData.confidence / 100 : detectionData.confidence
+      : 0;
+
     const res = await api.post('/api/detections', {
       userId,
       ...detectionData,
+      confidence,
     });
 
     console.log('✅ Detection saved:', res.data.detection._id);
