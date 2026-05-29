@@ -269,3 +269,19 @@ STRICT RULES:
 app.listen(PORT, "0.0.0.0", () => {
   console.log(`✅ Server running on port ${PORT}`);
 });
+// ── CROP RECOMMENDATION ───────────────────────────────────
+app.post('/api/crop-recommend', async (req, res) => {
+  const { N, P, K, temperature, humidity, ph, rainfall } = req.body;
+  try {
+    const hfRes = await fetch('https://kumarvishal01971-crop-recommendation.hf.space/predict', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ N, P, K, temperature, humidity, ph, rainfall }),
+    });
+    const data = await hfRes.json();
+    return res.json({ ok: true, crop: data.crop });
+  } catch (err) {
+    console.error('[crop-recommend] Error:', err.message);
+    return res.status(500).json({ error: 'prediction_failed', error_description: err.message });
+  }
+});
