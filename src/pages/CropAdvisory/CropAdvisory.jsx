@@ -4,7 +4,7 @@ import Card from '../../components/common/Card';
 import Btn from '../../components/common/Button';
 import Icon from '../../components/common/Icon';
 import { theme } from '../../styles/theme';
-import api from '../../services/api';
+import { predictCrop } from '../../services/api';
 import './CropAdvisory.css';
 
 const CropAdvisory = ({ setActive }) => {
@@ -16,10 +16,10 @@ const CropAdvisory = ({ setActive }) => {
     setLoading(true);
     setApiError(null);
     try {
-      const res = await api.post('/api/crop-recommend', payload);
-      setResult(res.data);
+      const data = await predictCrop(payload);
+      setResult(data);
     } catch (err) {
-      setApiError(err.response?.data?.error_description || 'Prediction failed. Try again.');
+      setApiError(err.message || 'Prediction failed. Try again.');
     } finally {
       setLoading(false);
     }
