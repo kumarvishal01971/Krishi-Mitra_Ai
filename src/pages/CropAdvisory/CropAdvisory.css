@@ -17,13 +17,6 @@
   font-size: 0.85rem;
 }
 
-.crop-advisory-headline {
-  margin: 0;
-  font-size: clamp(2rem, 3vw, 2.8rem);
-  line-height: 1.05;
-  letter-spacing: -0.03em;
-}
-
 .crop-advisory-copy {
   margin: 0.85rem 0 0;
   max-width: 760px;

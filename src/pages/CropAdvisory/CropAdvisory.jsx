@@ -35,10 +35,12 @@ const CropAdvisory = ({ setActive }) => {
     <div className="crop-advisory-page">
       <div className="crop-advisory-intro">
         <div>
-          <p className="crop-advisory-eyebrow">Crop Advisory</p>
-          <h1 className="crop-advisory-headline">Weather & Fertilizer in one place</h1>
+          <p className="crop-advisory-eyebrow">Agricultural Intelligence Hub</p>
+          <h1 style={{ color: theme.wheat, fontFamily: "'Playfair Display', serif", fontSize: 28, marginBottom: 8 }}>
+            Crop Intelligence & Advisory Center
+          </h1>
           <p className="crop-advisory-copy">
-            Get quick access to weather alerts and fertilizer guidance while using the crop recommendation tool.
+            Get quick access to weather alerts, soil health information and crop guidance.
           </p>
         </div>
       </div>
