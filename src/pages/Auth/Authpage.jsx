@@ -2,6 +2,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useAuth0 } from '@auth0/auth0-react';
 import Icon from '../../components/common/Icon';
+import { syncUser } from '../../services/userService';
 
 // ── Backend base URL ──────────────────────────────────────────
 // Add VITE_API_URL=http://localhost:4000 to your frontend .env
@@ -299,29 +300,27 @@ const AuthPage = ({ onAuthSuccess, onBack }) => {
   const crops = ['Rice','Wheat','Maize','Cotton','Sugarcane','Tomato','Potato','Soybean','Groundnut'];
 
   useEffect(() => {
-    if (isAuthenticated && user) {
-      const u = { name: user.name, email: user.email, picture: user.picture };
+    if (!isAuthenticated || !user) return;
 
-      // Sync Google user to MongoDB too
-      fetch(`${API}/api/users/sync`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ auth0Id: user.sub, email: user.email, name: user.name }),
-      })
-        .then(r => r.json())
-        .then(data => { 
-          if (data._id) {
-            u.mongoId = data._id;
-            localStorage.setItem('mongoUserId', data._id);  // ← store for detectionService
-          }
-        })
-        .catch(err => console.error('Google sync failed:', err))
-        .finally(() => {
-          localStorage.setItem('krishi_user', JSON.stringify(u));  // ← always save
-          setAuthUser(u); setSuccess(true);
-          setTimeout(() => onAuthSuccess?.(u), 900);
-        });
-    }
+    const doSync = async () => {
+      const u = { name: user.name, email: user.email, picture: user.picture };
+      try {
+        const mongoUser = await syncUser({ auth0Id: user.sub, email: user.email, name: user.name });
+        if (mongoUser?._id) {
+          u.mongoId = mongoUser._id;
+        }
+      } catch (err) {
+        console.error('Google sync failed:', err);
+      } finally {
+        // Always store a minimal krishi_user so front-end has a consistent object
+        localStorage.setItem('krishi_user', JSON.stringify(u));
+        setAuthUser(u);
+        setSuccess(true);
+        setTimeout(() => onAuthSuccess?.(u), 900);
+      }
+    };
+
+    doSync();
   }, [isAuthenticated, user]);
 
   const handleGoogleLogin = () => {
@@ -371,26 +370,13 @@ const AuthPage = ({ onAuthSuccess, onBack }) => {
       picture: verifiedUser?.picture || null,
     };
 
-    // Sync user to MongoDB and store their _id
+    // Sync user to MongoDB and store their _id using the shared service
     try {
-      const res = await fetch(`${API}/api/users/sync`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          email: u.email,
-          name: u.name,
-          // registration extra fields (ignored on login)
-          phone: regPhone || undefined,
-          state: regState || undefined,
-          crop: regCrop || undefined,
-        }),
-      });
-      const data = await res.json();
-      if (data._id) {
-        u.mongoId = data._id;
-        localStorage.setItem('mongoUserId', data._id);  // ← store for detectionService
+      const mongoUser = await syncUser({ email: u.email, name: u.name });
+      if (mongoUser?._id) {
+        u.mongoId = mongoUser._id;
       }
-      localStorage.setItem('krishi_user', JSON.stringify(u));  // ← add this
+      localStorage.setItem('krishi_user', JSON.stringify(u));
     } catch (err) {
       console.error('User sync failed:', err); // non-fatal, auth still succeeds
     }
