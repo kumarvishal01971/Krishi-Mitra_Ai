@@ -21,7 +21,7 @@ export const saveDetection = async (detectionData) => {
 
   if (!userId) {
     console.warn('⚠️ No mongoUserId found — user not synced yet. Detection not saved.');
-    return null;
+    return { success: false, reason: 'no_user' };
   }
 
   try {
@@ -37,11 +37,10 @@ export const saveDetection = async (detectionData) => {
     });
 
     console.log('✅ Detection saved:', res.data.detection._id);
-    return res.data.detection;
+    return { success: true, detection: res.data.detection };
   } catch (err) {
-    // Non-blocking — detection result still shows to user even if save fails
-    console.error('❌ Failed to save detection:', err.message);
-    return null;
+    console.error('❌ Failed to save detection:', err.message, err.response?.status, err.data);
+    return { success: false, reason: 'api_error', error: err };
   }
 };
 

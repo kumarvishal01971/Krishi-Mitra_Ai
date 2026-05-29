@@ -106,26 +106,31 @@ const DiseaseDetection = () => {
 
   // ── Save detection to MongoDB ──────────────────────────────
   const saveDetectionToDb = async ({ parsed, confidence }) => {
-    try {
-      const saved = await saveDetection({
-        diseaseLabel: parsed.disease,
-        diseaseName:  parsed.disease,
-        cropName:     parsed.plant,
-        confidence:   confidence,
-        isHealthy:    parsed.disease?.toLowerCase().includes('healthy') || false,
-        treatmentAdvice: parsed.treatment || '',
-      });
+    const result = await saveDetection({
+      diseaseLabel: parsed.disease,
+      diseaseName:  parsed.disease,
+      cropName:     parsed.plant,
+      confidence:   confidence,
+      isHealthy:    parsed.disease?.toLowerCase().includes('healthy') || false,
+      treatmentAdvice: parsed.treatment || '',
+    });
 
-      if (!saved) {
+    if (!result.success) {
+      if (result.reason === 'no_user') {
         setSyncError('⚠️ Detection saved locally but not synced to server. Please log in.');
-        return;
+      } else {
+        console.error('❌ Detection save failed:', result.error || result);
+        const serverMessage = result.error?.data?.error_description || result.error?.message;
+        setSyncError(
+          serverMessage
+            ? `⚠️ Detection sync failed: ${serverMessage}`
+            : 'Could not reach server. Detection not saved.'
+        );
       }
-
-      console.log('✅ Detection saved to MongoDB:', saved._id);
-    } catch (err) {
-      console.error('❌ Detection save failed:', err);
-      setSyncError('Could not reach server. Detection not saved.');
+      return;
     }
+
+    console.log('✅ Detection saved to MongoDB:', result.detection._id);
   };
 
   // ── Main analysis function ─────────────────────────────────

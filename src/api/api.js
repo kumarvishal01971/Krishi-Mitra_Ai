@@ -172,8 +172,35 @@ export const demoDiseaseResult = {
   disease: "Late Blight", confidence: 0.91, severity: "High",
   solution: "Apply copper-based fungicide. Remove infected leaves. Avoid overhead watering.",
 };
+const normalizeUrl = (path) => {
+  if (path.startsWith('http://') || path.startsWith('https://')) return path;
+  return `${BACKEND}${path.startsWith('/') ? '' : '/'}${path}`;
+};
 
+const request = async (url, init = {}) => {
+  const res = await fetch(normalizeUrl(url), init);
+  const json = await res.json().catch(() => null);
+  if (!res.ok) {
+    const error = new Error(json?.error_description || `Request failed ${res.status}`);
+    error.status = res.status;
+    error.data = json;
+    throw error;
+  }
+  return { data: json };
+};
 
+const api = {
+  get: async (url, opts = {}) => request(url, { method: 'GET', ...opts }),
+  post: async (url, body, opts = {}) => request(url, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...(opts.headers || {}) },
+    body: JSON.stringify(body),
+    ...opts,
+  }),
+  delete: async (url, opts = {}) => request(url, { method: 'DELETE', ...opts }),
+};
+
+export default api;
 // ── REPLACE getMandiPrices at the bottom of src/api/api.js ───
 
 const DATAGOV_KEY = import.meta.env?.VITE_DATAGOV_API_KEY

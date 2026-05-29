@@ -55,4 +55,17 @@ export const getUserProfile = async (auth0Id) => {
 };
 
 // ── getMongoUserId ────────────────────────────────
-export const getMongoUserId = () => localStorage.getItem('mongoUserId');
+export const getMongoUserId = () => {
+  const direct = localStorage.getItem('mongoUserId');
+  if (direct) return direct;
+
+  const stored = localStorage.getItem('krishi_user');
+  if (!stored) return null;
+
+  try {
+    const parsed = JSON.parse(stored);
+    return parsed?.mongoId || null;
+  } catch {
+    return null;
+  }
+};
