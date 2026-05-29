@@ -308,6 +308,7 @@ const AuthPage = ({ onAuthSuccess, onBack }) => {
         const mongoUser = await syncUser({ auth0Id: user.sub, email: user.email, name: user.name });
         if (mongoUser?._id) {
           u.mongoId = mongoUser._id;
+          localStorage.setItem('mongoUserId', mongoUser._id);
         }
       } catch (err) {
         console.error('Google sync failed:', err);
@@ -375,6 +376,7 @@ const AuthPage = ({ onAuthSuccess, onBack }) => {
       const mongoUser = await syncUser({ email: u.email, name: u.name });
       if (mongoUser?._id) {
         u.mongoId = mongoUser._id;
+          localStorage.setItem('mongoUserId', mongoUser._id);
       }
       localStorage.setItem('krishi_user', JSON.stringify(u));
     } catch (err) {
