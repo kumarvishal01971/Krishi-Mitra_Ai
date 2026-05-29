@@ -106,22 +106,25 @@ const DiseaseDetection = () => {
 
   // ── Save detection to MongoDB ──────────────────────────────
   const saveDetectionToDb = async ({ parsed, confidence }) => {
-    const result = await saveDetection({
-      diseaseLabel: parsed.disease,
-      diseaseName:  parsed.disease,
-      cropName:     parsed.plant || parsed.disease?.split(" ")[0] || "Unknown",
-      diseaseLabel: parsed.disease || "Unknown",
-      confidence:   confidence,
-      isHealthy:    parsed.disease?.toLowerCase().includes('healthy') || false,
-      treatmentAdvice: Array.isArray(parsed.treatment) ? parsed.treatment.join('. ') : (parsed.treatment || ''),
-    });
+    const payload = {
+      diseaseLabel: parsed.disease || 'Unknown',
+      diseaseName:  parsed.disease || 'Unknown',
+      cropName:     parsed.plant || parsed.disease?.split(' ')[0] || 'Unknown',
+      confidence:   typeof confidence === 'number' && Number.isFinite(confidence) ? confidence : 0,
+      isHealthy:    Boolean(parsed.disease?.toLowerCase().includes('healthy')),
+      treatmentAdvice: Array.isArray(parsed.treatment)
+        ? parsed.treatment.join('. ')
+        : (parsed.treatment || ''),
+    };
+
+    const result = await saveDetection(payload);
 
     if (!result.success) {
       if (result.reason === 'no_user') {
         setSyncError('⚠️ Detection saved locally but not synced to server. Please log in.');
       } else {
         console.error('❌ Detection save failed:', result.error || result);
-        const serverMessage = result.error?.data?.error_description || result.error?.message;
+        const serverMessage = result.response?.error_description || result.response?.error || result.error?.message;
         setSyncError(
           serverMessage
             ? `⚠️ Detection sync failed: ${serverMessage}`

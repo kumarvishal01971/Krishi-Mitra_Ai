@@ -39,8 +39,9 @@ export const saveDetection = async (detectionData) => {
     console.log('✅ Detection saved:', res.data.detection._id);
     return { success: true, detection: res.data.detection };
   } catch (err) {
-    console.error('❌ Failed to save detection:', err.message, err.response?.status, err.data);
-    return { success: false, reason: 'api_error', error: err };
+    const responseData = err.response?.data || null;
+    console.error('❌ Failed to save detection:', err.message, err.response?.status, responseData);
+    return { success: false, reason: 'api_error', error: err, response: responseData };
   }
 };
 

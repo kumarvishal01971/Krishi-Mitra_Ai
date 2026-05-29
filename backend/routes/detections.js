@@ -22,9 +22,10 @@ router.post('/', async (req, res) => {
   } = req.body;
 
   if (!diseaseLabel || !diseaseName || !cropName || confidence == null || isHealthy == null) {
+    console.error('[detections/POST] Invalid payload:', req.body);
     return res.status(400).json({
       error: 'missing_fields',
-      error_description: ' diseaseLabel, diseaseName, cropName, confidence and isHealthy are required.'
+      error_description: 'diseaseLabel, diseaseName, cropName, confidence and isHealthy are required.'
     });
   }
 
