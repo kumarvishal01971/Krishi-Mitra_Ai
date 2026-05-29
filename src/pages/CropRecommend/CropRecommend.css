@@ -2,8 +2,8 @@
 .cr-header { padding-bottom: 4px; }
 .cr-title { font-size: 1.15rem; font-weight: 700; color: #f0fdf4; margin: 0 0 4px; }
 .cr-subtitle { font-size: 0.78rem; color: #a3f0be; margin: 0; }
-.cr-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; align-items: stretch; }
-.cr-input-card { display: flex; flex-direction: column; gap: 14px; }
+.cr-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; align-items: stretch; min-height: 450px; }
+.cr-input-card { display: flex; flex-direction: column; gap: 14px; min-height: 100%; }
 .cr-section-label { display: flex; align-items: center; gap: 6px; font-size: 0.68rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: #86efac; padding-bottom: 2px; border-bottom: 1px solid #364f3a; }
 .cr-fields-grid { display: grid; gap: 10px; }
 .cr-fields-grid.four { grid-template-columns: repeat(4, 1fr); }
