@@ -109,7 +109,7 @@ const DiseaseDetection = () => {
     const result = await saveDetection({
       diseaseLabel: parsed.disease,
       diseaseName:  parsed.disease,
-      cropName:     parsed.plant,
+      cropName:     parsed.plant || parsed.disease?.split(" ")[0] || "Unknown",
       confidence:   confidence,
       isHealthy:    parsed.disease?.toLowerCase().includes('healthy') || false,
       treatmentAdvice: parsed.treatment || '',
