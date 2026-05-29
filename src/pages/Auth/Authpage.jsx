@@ -309,7 +309,12 @@ const AuthPage = ({ onAuthSuccess, onBack }) => {
         body: JSON.stringify({ auth0Id: user.sub, email: user.email, name: user.name }),
       })
         .then(r => r.json())
-        .then(data => { if (data._id) u.mongoId = data._id; })
+        .then(data => { 
+          if (data._id) {
+            u.mongoId = data._id;
+            localStorage.setItem('mongoUserId', data._id);  // ← store for detectionService
+          }
+        })
         .catch(err => console.error('Google sync failed:', err))
         .finally(() => {
           localStorage.setItem('krishi_user', JSON.stringify(u));  // ← always save
@@ -381,7 +386,10 @@ const AuthPage = ({ onAuthSuccess, onBack }) => {
         }),
       });
       const data = await res.json();
-      if (data._id) u.mongoId = data._id;  // stash for detection calls later
+      if (data._id) {
+        u.mongoId = data._id;
+        localStorage.setItem('mongoUserId', data._id);  // ← store for detectionService
+      }
       localStorage.setItem('krishi_user', JSON.stringify(u));  // ← add this
     } catch (err) {
       console.error('User sync failed:', err); // non-fatal, auth still succeeds
