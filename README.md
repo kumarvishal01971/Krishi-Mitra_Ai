@@ -183,20 +183,20 @@ The **flagship feature** of Krishi-Mitra AI — an intelligent plant disease cla
 
 ```
   ╔═══════════════╗      ╔═══════════════════════╗      ╔══════════════════════════╗
-  ║  📱  USER     ║      ║   🌐  REACT FRONTEND  ║      ║  🤗  HUGGING FACE API    ║
+  ║  📱  USER     ║      ║   🌐  REACT FRONTEND ║      ║  🤗 HUGGING FACE API    ║
   ╠═══════════════╣      ╠═══════════════════════╣      ╠══════════════════════════╣
   ║               ║      ║                       ║      ║                          ║
   ║ ① Selects     ║─────►║ ② Reads file as       ║      ║                          ║
-  ║   leaf image  ║      ║   base64 string        ║      ║                          ║
+  ║   leaf image  ║      ║   base64 string       ║      ║                          ║
   ║               ║      ║                       ║      ║                          ║
   ║               ║      ║ ③ POST /predict       ║─────►║ ④ Decode base64          ║
-  ║               ║      ║   { image, api_key }  ║      ║ ⑤ Resize → 224×224 px   ║
+  ║               ║      ║   { image, api_key }  ║      ║ ⑤ Resize → 224×224 px    ║
   ║               ║      ║                       ║      ║ ⑥ Normalize → [0.0, 1.0] ║
   ║               ║      ║                       ║      ║ ⑦ ResNet-50 inference    ║
-  ║               ║      ║                       ║      ║ ⑧ Softmax → class idx   ║
+  ║               ║      ║                       ║      ║ ⑧ Softmax → class idx    ║
   ║               ║      ║                       ║      ║                          ║
-  ║ ⑩ Result card ║◄─────║ ⑨ Renders result card ║◄─────║ { disease, confidence,  ║
-  ║   displayed   ║      ║   with treatment tips  ║      ║   treatment }            ║
+  ║ ⑩ Result card ║◄─────║ ⑨ Renders result card ║◄─────║ { disease, confidence,   ║
+  ║   displayed   ║      ║   with treatment tips ║      ║   treatment }            ║
   ╚═══════════════╝      ╚═══════════════════════╝      ╚══════════════════════════╝
 ```
 
