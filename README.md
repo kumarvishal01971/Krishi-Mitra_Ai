@@ -695,49 +695,59 @@ export async function detectDisease(imageFile) {
 <br/>
 
 ```
-Krishi-Mitra-AI/
+
+Krishi-Mitra_Ai/
+├── backend/                     # Node.js + Express backend
+│   ├── config/
+│   │   └── db.js                # Database connection
+│   ├── models/                  # MongoDB models
+│   │   ├── Detection.js
+│   │   └── User.js
+│   ├── routes/                  # API routes
+│   │   ├── detections.js
+│   │   └── users.js
+│   ├── server.js                # Backend entry point
+│   └── package.json
 │
-├── 📁 public/
-│   ├── favicon.ico
-│   └── og-image.png                     # Open Graph image for link previews
+├── public/                      # Static assets
+│   └── vite.svg
 │
-├── 📁 src/
+├── src/                         # Frontend source (React + Vite)
+│   ├── api/                     # API communication
+│   ├── assets/                  # Images & icons
+│   ├── components/              # Reusable UI components
+│   │   ├── Auth/
+│   │   ├── common/
+│   │   ├── context/
+│   │   ├── layout/
+│   │   └── navigation/
 │   │
-│   ├── 📁 assets/                       # Static images, SVG icons, fonts
+│   ├── pages/                   # Main feature pages
+│   │   ├── Auth/
+│   │   ├── Calender/
+│   │   ├── Chatbot/
+│   │   ├── Community/
+│   │   ├── CropAdvisory/
+│   │   ├── CropRecommend/
+│   │   ├── Disease/
+│   │   ├── Fertilizer/
+│   │   ├── Market/
+│   │   ├── Schemes/
+│   │   ├── Videos/
+│   │   ├── Weather/
+│   │   └── Landing/
 │   │
-│   ├── 📁 components/                   # Reusable UI components
-│   │   ├── Navbar.jsx                   # Top navigation bar
-│   │   ├── Footer.jsx                   # Site footer
-│   │   ├── ChatBot.jsx                  # Floating AI chatbot widget
-│   │   ├── ImageUploader.jsx            # Drag-and-drop leaf photo uploader
-│   │   ├── ResultCard.jsx               # Disease prediction result card
-│   │   ├── WeatherCard.jsx              # Single weather metric card
-│   │   └── LoadingSpinner.jsx           # Loading / inference state indicator
-│   │
-│   ├── 📁 pages/                        # Route-level page components
-│   │   ├── Home.jsx                     # 🏠 Landing page
-│   │   ├── DiseaseDetection.jsx         # 🦠 Plant disease detection
-│   │   ├── CropRecommendation.jsx       # 🌾 Crop recommendation
-│   │   ├── Weather.jsx                  # 🌤️ Weather dashboard
-│   │   └── About.jsx                    # ℹ️ About the project
-│   │
-│   ├── 📁 utils/                        # Helpers and API wrappers
-│   │   ├── api.js                       # All API calls (HF, weather, chatbot)
-│   │   └── helpers.js                   # Formatters, validators, converters
-│   │
-│   ├── App.jsx                          # Root component — router config
-│   ├── main.jsx                         # ReactDOM entry point
-│   └── index.css                        # Global styles + Tailwind directives
+│   ├── services/                # Business logic & API services
+│   ├── styles/                  # Global styling & themes
+│   ├── App.jsx                  # Root component
+│   └── main.jsx                 # Frontend entry point
 │
-├── .env                                 # 🔒 Local secrets — never commit
-├── .env.example                         # ✅ Safe template — commit this
-├── .gitignore
-├── index.html
-├── package.json
-├── tailwind.config.js
-├── vite.config.js
-└── README.md
+├── vercel.json                  # Deployment config
+├── vite.config.js               # Vite configuration
+├── package.json                 # Frontend dependencies
+└── README.md                    # Project documentation
 ```
+
 
 <br/>
 
@@ -1041,9 +1051,10 @@ in all copies or substantial portions of the Software.
 
 <br/>
 
-[![GitHub](https://img.shields.io/badge/GitHub-@Sanjaychaurasia04-181717?style=for-the-badge&logo=github)](https://github.com/Sanjaychaurasia04)
+[![GitHub](https://img.shields.io/badge/GitHub-@Kumarvishal01971-181717?style=for-the-badge&logo=github)](https://github.com/Kumarvishal01971)
+[![LinkedIn](https://img.shields.io/badge/LinkedIn-Vishal%20Kumar-0A66C2?style=for-the-badge&logo=linkedin)](https://www.linkedin.com/in/kumarvishal01971-w222b/)
 &nbsp;&nbsp;
-[![Live Demo](https://img.shields.io/badge/🌐%20Live%20Demo-Krishi-Mitra%20AI-2d6a4f?style=for-the-badge)](https://agro-sense-ai-smoky.vercel.app/)
+[![Live Demo](https://img.shields.io/badge/🌐%20Live%20Demo-Krishi-Mitra%20AI-2d6a4f?style=for-the-badge)](https://krishi-mitra-ai-kohl.vercel.app/)
 
 <br/><br/>
 
@@ -1053,6 +1064,6 @@ in all copies or substantial portions of the Software.
 
 *If Krishi-Mitra AI helped you or inspired you — a* ⭐ *on GitHub means the world.*
 
-[![GitHub Stars](https://img.shields.io/github/stars/Sanjaychaurasia04/Krishi-Mitra-AI?style=social)](https://github.com/Sanjaychaurasia04/Krishi-Mitra-AI)
+[![GitHub Stars](https://img.shields.io/github/stars/kumarvishal01971/Krishi-Mitra_Ai?style=social)](https://github.com/kumarvishal01971/Krishi-Mitra_Ai)
 
 </div>
