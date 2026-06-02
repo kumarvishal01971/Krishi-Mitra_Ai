@@ -13,7 +13,7 @@
   <img src="https://img.shields.io/badge/🌐%20Live%20Demo-Try%20It%20Now-2d6a4f?style=for-the-badge" alt="Live Demo"/>
 </a>
 &nbsp;
-<a href="https://github.com/Sanjaychaurasia04/Krishi-Mitra-AI">
+<a href="https://github.com/kumarvishal01971/Krishi-Mitra_Ai">
   <img src="https://img.shields.io/badge/⭐%20GitHub-Star%20This%20Repo-181717?style=for-the-badge&logo=github" alt="GitHub"/>
 </a>
 
@@ -324,12 +324,12 @@ A conversational AI assistant embedded in the platform, purpose-built to answer 
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────┐
-│  🧑‍🌾  You                                                               │
+│   You                                                                   │
 │  ──────────────────────────────────────────────────────────────────     │
 │  "My tomato leaves have yellow spots and are curling at the edges.      │
 │   What could this be, and what should I do?"                            │
 │                                                                         │
-│  🤖  Krishi-Mitra AI                                                       │
+│  Krishi-Mitra AI                                                        │
 │  ──────────────────────────────────────────────────────────────────     │
 │  "Yellow spots with leaf curl on tomato commonly point to one of        │
 │   three issues: Early Blight (Alternaria solani), Septoria Leaf         │
@@ -342,7 +342,7 @@ A conversational AI assistant embedded in the platform, purpose-built to answer 
 │   • Remove and destroy visibly infected leaves                          │
 │   • Avoid overhead watering — water at the base only                    │
 │   • Ensure adequate plant spacing for airflow                           │
-│   • Consider a copper-based fungicide if Early Blight is suspected"    │
+│   • Consider a copper-based fungicide if Early Blight is suspected"     │
 └─────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -412,17 +412,17 @@ A conversational AI assistant embedded in the platform, purpose-built to answer 
    └───────────────────────┘  └──────────────────┘  └───────────────────────┘
 
  ╔═════════════════════════════════════════════════════════════════════════╗
- ║                    ML MODEL  TRAINING  PIPELINE                        ║
- ║                                                                        ║
- ║  Kaggle Notebooks (P100 GPU)                                           ║
- ║      ↓                                                                 ║
- ║  New Plant Disease Dataset  ·  87,000+ images  ·  38 classes           ║
- ║      ↓                                                                 ║
- ║  Preprocessing  →  Augmentation  →  ResNet-50 Fine-Tuning              ║
- ║      ↓                                                                 ║
- ║  Export  →  plant_disease_model.keras                                  ║
- ║      ↓                                                                 ║
- ║  Deploy  →  Hugging Face Spaces  (Flask + Docker)                      ║
+ ║                    ML MODEL  TRAINING  PIPELINE                         ║
+ ║                                                                         ║
+ ║  Kaggle Notebooks (P100 GPU)                                            ║
+ ║      ↓                                                                  ║
+ ║  New Plant Disease Dataset  ·  87,000+ images  ·  38 classes            ║
+ ║      ↓                                                                  ║
+ ║  Preprocessing  →  Augmentation  →  ResNet-50 Fine-Tuning               ║
+ ║      ↓                                                                  ║
+ ║  Export  →  plant_disease_model.keras                                   ║
+ ║      ↓                                                                  ║
+ ║  Deploy  →  Hugging Face Spaces  (Flask + Docker)                       ║
  ╚═════════════════════════════════════════════════════════════════════════╝
 ```
 
@@ -450,9 +450,9 @@ A conversational AI assistant embedded in the platform, purpose-built to answer 
 
   Input                               Input ───────────────────────────┐
     │                                   │                              │
-  Conv → BN → ReLU                   Conv → BatchNorm → ReLU          │  Skip
+  Conv → BN → ReLU                   Conv → BatchNorm → ReLU           │  Skip
     │                                   │                              │  Connection
-  Conv → BN → ReLU                   Conv → BatchNorm → ReLU          │  (Identity)
+  Conv → BN → ReLU                   Conv → BatchNorm → ReLU           │  (Identity)
     │                                   │                              │
   Conv → BN → ReLU       ←VANISHES   Conv → BatchNorm ←─────────── Add → ReLU
     │                    gradients       │
@@ -520,36 +520,36 @@ A conversational AI assistant embedded in the platform, purpose-built to answer 
 
 ```
 ╔══════════════════════════════════════════════════════════════════════════╗
-║  STEP 1  —  ENVIRONMENT                                                 ║
-║  Platform : Kaggle Notebook · GPU : NVIDIA P100 (16 GB VRAM)            ║
-║  Framework: TensorFlow 2.x + Keras                                      ║
+║  STEP 1  —  ENVIRONMENT                                                  ║
+║  Platform : Kaggle Notebook · GPU : NVIDIA P100 (16 GB VRAM)             ║
+║  Framework: TensorFlow 2.x + Keras                                       ║
 ╠══════════════════════════════════════════════════════════════════════════╣
-║  STEP 2  —  PREPROCESSING                                               ║
-║  • Resize all images to 224 × 224 px (ResNet-50 input)                  ║
-║  • Normalize pixel values: [0, 255]  →  [0.0, 1.0]                      ║
-║  • Augmentation via ImageDataGenerator:                                 ║
-║      rotation_range=20  |  zoom_range=0.2                               ║
-║      width/height_shift_range=0.2  |  horizontal_flip=True              ║
+║  STEP 2  —  PREPROCESSING                                                ║
+║  • Resize all images to 224 × 224 px (ResNet-50 input)                   ║
+║  • Normalize pixel values: [0, 255]  →  [0.0, 1.0]                       ║
+║  • Augmentation via ImageDataGenerator:                                  ║
+║      rotation_range=20  |  zoom_range=0.2                                ║
+║      width/height_shift_range=0.2  |  horizontal_flip=True               ║
 ╠══════════════════════════════════════════════════════════════════════════╣
-║  STEP 3  —  MODEL CONSTRUCTION                                          ║
-║  base = ResNet50(weights='imagenet', include_top=False)                 ║
-║  Head → GlobalAveragePooling2D                                          ║
-║       → Dense(512, activation='relu')                                   ║
-║       → Dropout(0.5)                                                    ║
-║       → Dense(38, activation='softmax')  ← 38 output classes            ║
+║  STEP 3  —  MODEL CONSTRUCTION                                           ║
+║  base = ResNet50(weights='imagenet', include_top=False)                  ║
+║  Head → GlobalAveragePooling2D                                           ║ 
+║       → Dense(512, activation='relu')                                    ║
+║       → Dropout(0.5)                                                     ║
+║       → Dense(38, activation='softmax')  ← 38 output classes             ║
 ╠══════════════════════════════════════════════════════════════════════════╣
-║  STEP 4  —  TWO-PHASE TRAINING                                          ║
-║  Phase 1 — Transfer Learning (base frozen)                              ║
-║      Optimizer: Adam(lr=1e-3)  |  Loss: Categorical Crossentropy        ║
-║      Epochs: ~10  →  trains custom head rapidly                         ║
-║                                                                         ║
-║  Phase 2 — Fine-Tuning (unfreeze last N ResNet blocks)                  ║
-║      Optimizer: Adam(lr=1e-5)  ← low LR preserves pretrained weights   ║
-║      Epochs: until val_loss converges                                   ║
+║  STEP 4  —  TWO-PHASE TRAINING                                           ║
+║  Phase 1 — Transfer Learning (base frozen)                               ║
+║      Optimizer: Adam(lr=1e-3)  |  Loss: Categorical Crossentropy         ║
+║      Epochs: ~10  →  trains custom head rapidly                          ║
+║                                                                          ║
+║  Phase 2 — Fine-Tuning (unfreeze last N ResNet blocks)                   ║
+║      Optimizer: Adam(lr=1e-5)  ← low LR preserves pretrained weights     ║
+║      Epochs: until val_loss converges                                    ║
 ╠══════════════════════════════════════════════════════════════════════════╣
-║  STEP 5  —  EXPORT                                                      ║
-║  model.save('plant_disease_model.keras')                                ║
-║  → Preserves architecture + weights + optimizer state                   ║
+║  STEP 5  —  EXPORT                                                       ║
+║  model.save('plant_disease_model.keras')                                 ║
+║  → Preserves architecture + weights + optimizer state                    ║
 ╚══════════════════════════════════════════════════════════════════════════╝
 ```
 
@@ -1045,16 +1045,16 @@ in all copies or substantial portions of the Software.
 
 <br/>
 
-### Sanjay Chaurasia
+### VISHAL KUMAR
 
-*Full-Stack Developer &nbsp;·&nbsp; ML Engineer &nbsp;·&nbsp; Building technology for social impact*
+*AI/ML Enthusiast &nbsp;·&nbsp; Full-Stack Learner &nbsp;·&nbsp; Building Technology with Purpose*
 
 <br/>
 
 [![GitHub](https://img.shields.io/badge/GitHub-@Kumarvishal01971-181717?style=for-the-badge&logo=github)](https://github.com/Kumarvishal01971)
 [![LinkedIn](https://img.shields.io/badge/LinkedIn-Vishal%20Kumar-0A66C2?style=for-the-badge&logo=linkedin)](https://www.linkedin.com/in/kumarvishal01971-w222b/)
 &nbsp;&nbsp;
-[![Live Demo](https://img.shields.io/badge/🌐%20Live%20Demo-Krishi-Mitra%20AI-2d6a4f?style=for-the-badge)](https://krishi-mitra-ai-kohl.vercel.app/)
+[![Live Demo](https://img.shields.io/badge/%20Live%20Demo-Visit%20Website-2d6a4f?style=for-the-badge)](https://krishi-mitra-ai-kohl.vercel.app/)
 
 <br/><br/>
 
