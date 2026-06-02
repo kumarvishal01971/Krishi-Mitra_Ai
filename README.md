@@ -134,7 +134,7 @@ Farmers across rural India and the developing world face the same compounding pr
 ```
  ┌─────────────────────────────────────────────────────────────────────────────┐
  │                                                                             │
- │    🌿  A G R O S E N S E   A I  —  Platform Overview                       │
+ │    🌿  K R I S H I-M I T R A   A I  —  Platform Overview                       │
  │                                                                             │
  ├───────────────┬──────────────────┬──────────────────┬────────────────────── ┤
  │  🦠 Disease   │  🌾 Crop Rec.   │  🌤️  Weather    │  🤖 AI Chatbot       │
@@ -398,18 +398,18 @@ A conversational AI assistant embedded in the platform, purpose-built to answer 
                                       │  API Calls (HTTPS + API Keys)
              ┌────────────────────────┼──────────────────────────────┐
              │                        │                              │
- ┌───────────▼────────────┐  ┌────────▼─────────┐  ┌───────────────▼──────┐
- │   HUGGING FACE SPACES  │  │   WEATHER API    │  │    LLM  API           │
- │   Flask  +  ResNet-50  │  │ (OpenWeatherMap) │  │  (Chatbot Backend)    │
- │   Docker Container     │  │                  │  │                       │
- │                        │  │  GET /weather    │  │  POST /chat           │
- │  POST  /predict        │  │  ?city={query}   │  │  { messages[] }       │
- │  { base64_image }      │  │                  │  │                       │
- │                        │  │  → temp          │  │  → natural language   │
- │  → disease name        │  │  → humidity      │  │    farming guidance   │
- │  → confidence %        │  │  → wind          │  │                       │
- │  → treatment advice    │  │  → condition     │  │                       │
- └────────────────────────┘  └──────────────────┘  └───────────────────────┘
+   ┌───────────▼────────────┐ ┌────────▼─────────┐  ┌───────────────▼───────┐
+   │   HUGGING FACE SPACES│   │   WEATHER API    │  │    LLM  API           │
+   │  Flask  +  ResNet-50  │  │ (OpenWeatherMap) │  │  (Chatbot Backend)    │
+   │  Docker Container     │  │                  │  │                       │
+   │                       │  │  GET /weather    │  │  POST /chat           │
+   │ POST  /predict        │  │  ?city={query}   │  │  { messages[] }       │
+   │ { base64_image }      │  │                  │  │                       │
+   │                       │  │  → temp          │  │  → natural language   │
+   │ → disease name        │  │  → humidity      │  │    farming guidance   │
+   │ → confidence %        │  │  → wind          │  │                       │
+   │ → treatment advice    │  │  → condition     │  │                       │
+   └───────────────────────┘  └──────────────────┘  └───────────────────────┘
 
  ╔═════════════════════════════════════════════════════════════════════════╗
  ║                    ML MODEL  TRAINING  PIPELINE                        ║
