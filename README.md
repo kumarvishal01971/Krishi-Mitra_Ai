@@ -9,7 +9,7 @@
 <!-- STATUS -->
 <img src="https://img.shields.io/badge/⚡%20Status-Live%20%26%20Deployed-22c55e?style=for-the-badge" alt="Live"/>
 &nbsp;
-<a href="https://agro-sense-ai-smoky.vercel.app/">
+<a href="https://krishi-mitra-ai-kohl.vercel.app">
   <img src="https://img.shields.io/badge/🌐%20Live%20Demo-Try%20It%20Now-2d6a4f?style=for-the-badge" alt="Live Demo"/>
 </a>
 &nbsp;
