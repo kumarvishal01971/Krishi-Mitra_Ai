@@ -1,6 +1,6 @@
 <div align="center">
 
-<img src="https://capsule-render.vercel.app/api?type=waving&color=1b4332,2d6a4f,40916c,52b788&height=220&section=header&text=🌿%20AgroSense%20AI&fontSize=64&fontColor=ffffff&fontAlignY=40&desc=Intelligent%20Farming%20Powered%20by%20Deep%20Learning&descAlignY=60&descSize=20&animation=fadeIn" width="100%"/>
+<img src="https://capsule-render.vercel.app/api?type=waving&color=1b4332,2d6a4f,40916c,52b788&height=220&section=header&text=🌿%20Krishi-Mitra%20AI&fontSize=64&fontColor=ffffff&fontAlignY=40&desc=Intelligent%20Farming%20Powered%20by%20Deep%20Learning&descAlignY=60&descSize=20&animation=fadeIn" width="100%"/>
 
 </div>
 
@@ -13,7 +13,7 @@
   <img src="https://img.shields.io/badge/🌐%20Live%20Demo-Try%20It%20Now-2d6a4f?style=for-the-badge" alt="Live Demo"/>
 </a>
 &nbsp;
-<a href="https://github.com/Sanjaychaurasia04/AgroSense-AI">
+<a href="https://github.com/Sanjaychaurasia04/Krishi-Mitra-AI">
   <img src="https://img.shields.io/badge/⭐%20GitHub-Star%20This%20Repo-181717?style=for-the-badge&logo=github" alt="GitHub"/>
 </a>
 
@@ -39,7 +39,7 @@
 <br/><br/>
 
 <p align="center">
-<b>AgroSense AI</b> is an end-to-end intelligent agriculture platform that brings deep learning and AI to every farmer's fingertips.<br/>
+<b>Krishi-Mitra AI</b> is an end-to-end intelligent agriculture platform that brings deep learning and AI to every farmer's fingertips.<br/>
 Detect plant diseases from a leaf photo, get smart crop recommendations from soil data, check live weather, and<br/>
 chat with an AI farming assistant — all in one beautifully unified web application.
 </p>
@@ -60,8 +60,8 @@ chat with an AI farming assistant — all in one beautifully unified web applica
 <tr>
 <td valign="top" width="50%">
 
-**Getting to Know AgroSense**
-- [🌾 Why AgroSense AI?](#-why-agrosense-ai)
+**Getting to Know Krishi-Mitra**
+- [🌾 Why Krishi-Mitra AI?](#-why-Krishi-Mitra-ai)
 - [✨ Features at a Glance](#-features-at-a-glance)
 - [🔬 Feature Deep-Dives](#-feature-deep-dives)
   - [🦠 Plant Disease Detection](#-1-plant-disease-detection)
@@ -93,7 +93,7 @@ chat with an AI farming assistant — all in one beautifully unified web applica
 
 <div align="center">
 
-## 🌾 Why AgroSense AI?
+## 🌾 Why Krishi-Mitra AI?
 
 </div>
 
@@ -101,13 +101,13 @@ chat with an AI farming assistant — all in one beautifully unified web applica
 
 Farmers across rural India and the developing world face the same compounding problems every season: diseases go undetected until yield is lost, soil analysis requires expensive lab visits, and expert agronomists are out of reach. Existing digital tools demand technical literacy, strong internet, or costly subscriptions.
 
-**AgroSense AI was built to close every one of those gaps.**
+**Krishi-Mitra AI was built to close every one of those gaps.**
 
 <br/>
 
 <div align="center">
 
-| ❌ &nbsp; Without AgroSense | ✅ &nbsp; With AgroSense AI |
+| ❌ &nbsp; Without Krishi-Mitra | ✅ &nbsp; With Krishi-Mitra AI |
 |:---|:---|
 | Send leaf samples to a lab — wait days for results | 📸 Upload a photo — diagnosis in seconds |
 | Guess which crop your soil supports | 🧪 Enter soil data — get a data-driven recommendation |
@@ -175,7 +175,7 @@ Farmers across rural India and the developing world face the same compounding pr
 
 <br/>
 
-The **flagship feature** of AgroSense AI — an intelligent plant disease classification system powered by a custom-trained **ResNet-50 convolutional neural network**, served through a Flask REST API hosted on Hugging Face Spaces.
+The **flagship feature** of Krishi-Mitra AI — an intelligent plant disease classification system powered by a custom-trained **ResNet-50 convolutional neural network**, served through a Flask REST API hosted on Hugging Face Spaces.
 
 <br/>
 
@@ -329,7 +329,7 @@ A conversational AI assistant embedded in the platform, purpose-built to answer 
 │  "My tomato leaves have yellow spots and are curling at the edges.      │
 │   What could this be, and what should I do?"                            │
 │                                                                         │
-│  🤖  AgroSense AI                                                       │
+│  🤖  Krishi-Mitra AI                                                       │
 │  ──────────────────────────────────────────────────────────────────     │
 │  "Yellow spots with leaf curl on tomato commonly point to one of        │
 │   three issues: Early Blight (Alternaria solani), Septoria Leaf         │
@@ -359,7 +359,7 @@ A conversational AI assistant embedded in the platform, purpose-built to answer 
 | 💊 Fertilizers | NPK dosage, timing, deficiency symptoms |
 | 🧪 Soil Management | pH correction, organic matter, composting |
 | 📅 Seasonal Planning | Planting windows, harvest timing, crop rotation |
-| 🔗 Platform Guidance | Routing users to the right AgroSense feature |
+| 🔗 Platform Guidance | Routing users to the right Krishi-Mitra feature |
 
 </div>
 
@@ -695,7 +695,7 @@ export async function detectDisease(imageFile) {
 <br/>
 
 ```
-AgroSense-AI/
+Krishi-Mitra-AI/
 │
 ├── 📁 public/
 │   ├── favicon.ico
@@ -769,8 +769,8 @@ AgroSense-AI/
 
 ```bash
 # ① Clone the repository
-git clone https://github.com/Sanjaychaurasia04/AgroSense-AI.git
-cd AgroSense-AI
+git clone https://github.com/Sanjaychaurasia04/Krishi-Mitra-AI.git
+cd Krishi-Mitra-AI
 
 # ② Install all dependencies
 npm install
@@ -860,7 +860,7 @@ GROK_API_KEY=your_grok_api_key_here
 ```
 1. Push to GitHub
        ↓
-2. vercel.com/new → Import AgroSense-AI repo
+2. vercel.com/new → Import Krishi-Mitra-AI repo
        ↓
 3. Add environment variables (all 4 VITE_ keys) in Vercel dashboard
        ↓
@@ -969,8 +969,8 @@ All contributions — bug fixes, new features, documentation improvements, or id
 
 ```bash
 # 1. Fork the repo on GitHub, then clone your fork
-git clone https://github.com/YOUR_USERNAME/AgroSense-AI.git
-cd AgroSense-AI
+git clone https://github.com/YOUR_USERNAME/Krishi-Mitra-AI.git
+cd Krishi-Mitra-AI
 
 # 2. Create a clearly named branch
 git checkout -b feature/pest-identification
@@ -1043,7 +1043,7 @@ in all copies or substantial portions of the Software.
 
 [![GitHub](https://img.shields.io/badge/GitHub-@Sanjaychaurasia04-181717?style=for-the-badge&logo=github)](https://github.com/Sanjaychaurasia04)
 &nbsp;&nbsp;
-[![Live Demo](https://img.shields.io/badge/🌐%20Live%20Demo-AgroSense%20AI-2d6a4f?style=for-the-badge)](https://agro-sense-ai-smoky.vercel.app/)
+[![Live Demo](https://img.shields.io/badge/🌐%20Live%20Demo-Krishi-Mitra%20AI-2d6a4f?style=for-the-badge)](https://agro-sense-ai-smoky.vercel.app/)
 
 <br/><br/>
 
@@ -1051,8 +1051,8 @@ in all copies or substantial portions of the Software.
 
 <br/>
 
-*If AgroSense AI helped you or inspired you — a* ⭐ *on GitHub means the world.*
+*If Krishi-Mitra AI helped you or inspired you — a* ⭐ *on GitHub means the world.*
 
-[![GitHub Stars](https://img.shields.io/github/stars/Sanjaychaurasia04/AgroSense-AI?style=social)](https://github.com/Sanjaychaurasia04/AgroSense-AI)
+[![GitHub Stars](https://img.shields.io/github/stars/Sanjaychaurasia04/Krishi-Mitra-AI?style=social)](https://github.com/Sanjaychaurasia04/Krishi-Mitra-AI)
 
 </div>
