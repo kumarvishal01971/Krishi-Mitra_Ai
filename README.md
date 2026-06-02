@@ -132,25 +132,25 @@ Farmers across rural India and the developing world face the same compounding pr
 <div align="center">
 
 ```
- ┌─────────────────────────────────────────────────────────────────────────────┐
- │                                                                             │
- │    🌿  K R I S H I-M I T R A   A I  —  Platform Overview                       │
- │                                                                             │
- ├───────────────┬──────────────────┬──────────────────┬────────────────────── ┤
+ ┌────────────────────────────────────────────────────────────────────────────┐
+ │                                                                            │
+ │        K R I S H I-M I T R A   A I  —  Platform Overview                   │
+ │                                                                            │
+ ├───────────────┬──────────────────┬──────────────────┬──────────────────────┤
  │  🦠 Disease   │  🌾 Crop Rec.   │  🌤️  Weather    │  🤖 AI Chatbot       │
- │  Detection    │  Engine          │  Dashboard       │                       │
- ├───────────────┼──────────────────┼──────────────────┼───────────────────────┤
- │ Upload a leaf │ Enter 7 soil     │ Real-time        │ Natural language      │
- │ photo →       │ & climate        │ conditions for   │ farming assistant     │
- │ ResNet-50     │ parameters →     │ any location     │ available 24/7        │
- │ classifies    │ ML model →       │ worldwide        │                       │
- │ 38 diseases   │ ideal crop       │                  │                       │
- ├───────────────┼──────────────────┼──────────────────┼───────────────────────┤
- │ 87K+ training │ 22+ supported    │ Temp · Humidity  │ Crop care · Pests     │
- │ images        │ crop varieties   │ Wind · Rain      │ Soil · Fertilizer     │
- │ Flask API on  │ NPK + pH +       │ Cloud cover      │ Seasons · Schemes     │
- │ Hugging Face  │ rainfall inputs  │ Visibility       │ Powered by LLM        │
- └───────────────┴──────────────────┴──────────────────┴───────────────────────┘
+ │  Detection    │  Engine          │  Dashboard       │                      │
+ ├───────────────┼──────────────────┼──────────────────┼──────────────────────┤
+ │ Upload a leaf │ Enter 7 soil     │ Real-time        │ Natural language     │
+ │ photo →       │ & climate        │ conditions for   │ farming assistant    │
+ │ ResNet-50     │ parameters →     │ any location     │ available 24/7       │
+ │ classifies    │ ML model →       │ worldwide        │                      │
+ │ 38 diseases   │ ideal crop       │                  │                      │
+ ├───────────────┼──────────────────┼──────────────────┼──────────────────────┤
+ │ 87K+ training │ 22+ supported    │ Temp · Humidity  │ Crop care · Pests    │
+ │ images        │ crop varieties   │ Wind · Rain      │ Soil · Fertilizer    │
+ │ Flask API on  │ NPK + pH +       │ Cloud cover      │ Seasons · Schemes    │
+ │ Hugging Face  │ rainfall inputs  │ Visibility       │ Powered by LLM       │
+ └───────────────┴──────────────────┴──────────────────┴──────────────────────┘
 ```
 
 </div>
